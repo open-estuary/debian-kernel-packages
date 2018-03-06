@@ -1,0 +1,8 @@
+Source: linux-latest-reference
+Section: kernel
+Priority: optional
+Maintainer: Ricardo Salveti de Araujo <ricardo.salveti@linaro.org>
+Standards-Version: 3.9.6
+Build-Depends: debhelper (>> 7)
+Vcs-Git: https://github.com/96boards/debian-linux-latest-reference.git
+Vcs-Browser: https://github.com/96boards/debian-linux-latest-reference.git
