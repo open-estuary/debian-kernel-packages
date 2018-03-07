@@ -1,0 +1,14 @@
+#! /bin/sh
+set -e
+
+cat > /target/etc/apt/sources.list.d/estuary.list <<EOF
+## Estuary 5.1 Overlay
+deb http://repo.estuarydev.org/releases/5.1/debian/ estuary-5.1 main
+deb-src http://repo.estuarydev.org/releases/5.1/debian/ estuary-5.1 main
+EOF
+
+cp /usr/share/estuary/estuaryrepo.key /target/tmp/key.pub
+in-target apt-key add "/tmp/key.pub"
+in-target apt-get update -q || true
+apt-install linux-image-estuary-arm64
+

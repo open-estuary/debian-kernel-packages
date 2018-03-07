@@ -1,4 +1,4 @@
-linux-estuary-latest (1) unstable; urgency=medium
+linux-estuary-latest (0) unstable; urgency=medium
 
   * Initial package:
     - Meta package for the linux estuary package, available as part of the
