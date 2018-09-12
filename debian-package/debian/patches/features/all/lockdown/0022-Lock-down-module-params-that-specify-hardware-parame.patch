@@ -14,10 +14,8 @@ Signed-off-by: David Howells <dhowells@redhat.com>
  kernel/params.c | 26 +++++++++++++++++++++-----
  1 file changed, 21 insertions(+), 5 deletions(-)
 
-Index: debian-kernel-packaging/kernel/params.c
-===================================================================
---- debian-kernel-packaging.orig/kernel/params.c
-+++ debian-kernel-packaging/kernel/params.c
+--- a/kernel/params.c
++++ b/kernel/params.c
 @@ -108,13 +108,19 @@ bool parameq(const char *a, const char *
  	return parameqn(a, b, strlen(a)+1);
  }
@@ -27,8 +25,8 @@ Index: debian-kernel-packaging/kernel/params.c
 +			       const char *doing)
  {
  	if (kp->flags & KERNEL_PARAM_FL_UNSAFE) {
- 		pr_warn("Setting dangerous option %s - tainting kernel\n",
- 			kp->name);
+ 		pr_notice("Setting dangerous option %s - tainting kernel\n",
+ 			  kp->name);
  		add_taint(TAINT_USER, LOCKDEP_STILL_OK);
  	}
 +

@@ -1,7 +1,7 @@
 Subject: random: Make it work on rt
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Tue, 21 Aug 2012 20:38:50 +0200
-Origin: https://www.kernel.org/pub/linux/kernel/projects/rt/4.14/older/patches-4.14.15-rt13.tar.xz
+Origin: https://www.kernel.org/pub/linux/kernel/projects/rt/4.18/older/patches-4.18.5-rt3.tar.xz
 
 Delegate the random insertion to the forced threaded interrupt
 handler. Store the return IP of the hard interrupt handler in the irq
@@ -12,16 +12,17 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 
 ---
  drivers/char/random.c   |   11 +++++------
+ drivers/hv/hv.c         |    4 +++-
  drivers/hv/vmbus_drv.c  |    4 +++-
  include/linux/irqdesc.h |    1 +
  include/linux/random.h  |    2 +-
  kernel/irq/handle.c     |    8 +++++++-
  kernel/irq/manage.c     |    6 ++++++
- 6 files changed, 23 insertions(+), 9 deletions(-)
+ 7 files changed, 26 insertions(+), 10 deletions(-)
 
 --- a/drivers/char/random.c
 +++ b/drivers/char/random.c
-@@ -1113,28 +1113,27 @@ static __u32 get_reg(struct fast_pool *f
+@@ -1215,28 +1215,27 @@ static __u32 get_reg(struct fast_pool *f
  	return *ptr;
  }
  
@@ -55,9 +56,25 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  
  	fast_mix(fast_pool);
  	add_interrupt_bench(cycles);
+--- a/drivers/hv/hv.c
++++ b/drivers/hv/hv.c
+@@ -112,10 +112,12 @@ int hv_post_message(union hv_connection_
+ static void hv_stimer0_isr(void)
+ {
+ 	struct hv_per_cpu_context *hv_cpu;
++	struct pt_regs *regs = get_irq_regs();
++	u64 ip = regs ? instruction_pointer(regs) : 0;
+ 
+ 	hv_cpu = this_cpu_ptr(hv_context.cpu_context);
+ 	hv_cpu->clk_evt->event_handler(hv_cpu->clk_evt);
+-	add_interrupt_randomness(stimer0_vector, 0);
++	add_interrupt_randomness(stimer0_vector, 0, ip);
+ }
+ 
+ static int hv_ce_set_next_event(unsigned long delta,
 --- a/drivers/hv/vmbus_drv.c
 +++ b/drivers/hv/vmbus_drv.c
-@@ -966,6 +966,8 @@ static void vmbus_isr(void)
+@@ -972,6 +972,8 @@ static void vmbus_isr(void)
  	void *page_addr = hv_cpu->synic_event_page;
  	struct hv_message *msg;
  	union hv_synic_event_flags *event;
@@ -66,7 +83,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  	bool handled = false;
  
  	if (unlikely(page_addr == NULL))
-@@ -1009,7 +1011,7 @@ static void vmbus_isr(void)
+@@ -1015,7 +1017,7 @@ static void vmbus_isr(void)
  			tasklet_schedule(&hv_cpu->msg_dpc);
  	}
  
@@ -98,7 +115,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  extern int wait_for_random_bytes(void);
 --- a/kernel/irq/handle.c
 +++ b/kernel/irq/handle.c
-@@ -183,10 +183,16 @@ irqreturn_t handle_irq_event_percpu(stru
+@@ -185,10 +185,16 @@ irqreturn_t handle_irq_event_percpu(stru
  {
  	irqreturn_t retval;
  	unsigned int flags = 0;
@@ -118,7 +135,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  		note_interrupt(desc, retval);
 --- a/kernel/irq/manage.c
 +++ b/kernel/irq/manage.c
-@@ -1027,6 +1027,12 @@ static int irq_thread(void *data)
+@@ -1065,6 +1065,12 @@ static int irq_thread(void *data)
  		if (action_ret == IRQ_WAKE_THREAD)
  			irq_wake_secondary(desc, action);
  

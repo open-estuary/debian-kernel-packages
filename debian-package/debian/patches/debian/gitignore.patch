@@ -7,7 +7,7 @@ Forwarded: not-needed
 
 --- a/.gitignore
 +++ b/.gitignore
-@@ -61,23 +61,11 @@ modules.builtin
+@@ -64,11 +64,6 @@ modules.builtin
  /*.spec
  
  #
@@ -16,8 +16,10 @@ Forwarded: not-needed
 -/debian/
 -
 -#
- # tar directory (make tar*-pkg)
+ # Snap directory (make snap-pkg)
  #
+ /snap/
+@@ -79,14 +74,6 @@ modules.builtin
  /tar-install/
  
  #
@@ -26,12 +28,13 @@ Forwarded: not-needed
 -!.gitignore
 -!.mailmap
 -!.cocciconfig
+-!.clang-format
 -
 -#
  # Generated include files
  #
  include/config
-@@ -122,3 +110,10 @@ all.config
+@@ -132,3 +119,10 @@ all.config
  
  # Kdevelop4
  *.kdev4

@@ -1,7 +1,7 @@
 From: Daniel Wagner <daniel.wagner@bmw-carit.de>
 Date: Fri, 11 Jul 2014 15:26:11 +0200
 Subject: work-simple: Simple work queue implemenation
-Origin: https://www.kernel.org/pub/linux/kernel/projects/rt/4.14/older/patches-4.14.15-rt13.tar.xz
+Origin: https://www.kernel.org/pub/linux/kernel/projects/rt/4.18/older/patches-4.18.5-rt3.tar.xz
 
 Provides a framework for enqueuing callbacks from irq context
 PREEMPT_RT_FULL safe. The callbacks are executed in kthread context.
@@ -48,12 +48,12 @@ Signed-off-by: Daniel Wagner <daniel.wagner@bmw-carit.de>
 @@ -18,7 +18,7 @@ endif
  
  obj-y += core.o loadavg.o clock.o cputime.o
- obj-y += idle_task.o fair.o rt.o deadline.o
--obj-y += wait.o wait_bit.o swait.o completion.o idle.o
-+obj-y += wait.o wait_bit.o swait.o swork.o completion.o idle.o
+ obj-y += idle.o fair.o rt.o deadline.o
+-obj-y += wait.o wait_bit.o swait.o completion.o
++obj-y += wait.o wait_bit.o swait.o swork.o completion.o
+ 
  obj-$(CONFIG_SMP) += cpupri.o cpudeadline.o topology.o stop_task.o
  obj-$(CONFIG_SCHED_AUTOGROUP) += autogroup.o
- obj-$(CONFIG_SCHEDSTATS) += stats.o
 --- /dev/null
 +++ b/kernel/sched/swork.c
 @@ -0,0 +1,173 @@

@@ -237,12 +237,6 @@ Priority: standard
 Description: Common PCMCIA drivers
  This package contains common PCMCIA drivers for the kernel.
 
-Package: nic-usb-modules
-Depends: kernel-image, nic-shared-modules, nic-wireless-modules, usb-modules, crc-modules
-Priority: standard
-Description: USB NIC drivers
- This package contains USB network adapter drivers for the kernel.
-
 Package: sata-modules
 Depends: kernel-image, scsi-core-modules, ata-modules
 Priority: standard

@@ -1,19 +1,19 @@
 From: J. R. Okajima <hooanon05@yahoo.co.jp>
-Date: Sat Dec 16 15:29:33 2017 +0900
-Subject: SPDX-License-Identifier: GPL-2.0
-Origin: https://github.com/sfjro/aufs4-standalone/tree/8b9c1be851f351af1104f55952e211ae541695ee
+Date: Tue Aug 14 17:10:38 2018 +0900
+Subject: aufs4.18 standalone patch
+Origin: https://github.com/sfjro/aufs4-standalone/tree/799ee5199f279477d2a5e1cff2c3f9dc44fcb3af
 Bug-Debian: https://bugs.debian.org/541828
 
 Patch headers added by debian/patches/features/all/aufs4/gen-patch
 
 SPDX-License-Identifier: GPL-2.0
-aufs4.x-rcN standalone patch
+aufs4.18 standalone patch
 
-Index: debian-kernel-packaging/fs/dcache.c
-===================================================================
---- debian-kernel-packaging.orig/fs/dcache.c
-+++ debian-kernel-packaging/fs/dcache.c
-@@ -1308,6 +1308,7 @@ rename_retry:
+diff --git a/fs/dcache.c b/fs/dcache.c
+index 88a1514..e3f500a 100644
+--- a/fs/dcache.c
++++ b/fs/dcache.c
+@@ -1342,6 +1342,7 @@ void d_walk(struct dentry *parent, void *data,
  	seq = 1;
  	goto again;
  }
@@ -21,7 +21,7 @@ Index: debian-kernel-packaging/fs/dcache.c
  
  struct check_mount {
  	struct vfsmount *mnt;
-@@ -2920,6 +2921,7 @@ void d_exchange(struct dentry *dentry1,
+@@ -2890,6 +2891,7 @@ void d_exchange(struct dentry *dentry1, struct dentry *dentry2)
  
  	write_sequnlock(&rename_lock);
  }
@@ -29,11 +29,11 @@ Index: debian-kernel-packaging/fs/dcache.c
  
  /**
   * d_ancestor - search for an ancestor
-Index: debian-kernel-packaging/fs/exec.c
-===================================================================
---- debian-kernel-packaging.orig/fs/exec.c
-+++ debian-kernel-packaging/fs/exec.c
-@@ -109,6 +109,7 @@ bool path_noexec(const struct path *path
+diff --git a/fs/exec.c b/fs/exec.c
+index bdd0eac..edd3405 100644
+--- a/fs/exec.c
++++ b/fs/exec.c
+@@ -109,6 +109,7 @@ bool path_noexec(const struct path *path)
  	return (path->mnt->mnt_flags & MNT_NOEXEC) ||
  	       (path->mnt->mnt_sb->s_iflags & SB_I_NOEXEC);
  }
@@ -41,11 +41,11 @@ Index: debian-kernel-packaging/fs/exec.c
  
  #ifdef CONFIG_USELIB
  /*
-Index: debian-kernel-packaging/fs/fcntl.c
-===================================================================
---- debian-kernel-packaging.orig/fs/fcntl.c
-+++ debian-kernel-packaging/fs/fcntl.c
-@@ -85,6 +85,7 @@ int setfl(int fd, struct file * filp, un
+diff --git a/fs/fcntl.c b/fs/fcntl.c
+index 545e686..0237ad7 100644
+--- a/fs/fcntl.c
++++ b/fs/fcntl.c
+@@ -85,6 +85,7 @@ int setfl(int fd, struct file * filp, unsigned long arg)
   out:
  	return error;
  }
@@ -53,11 +53,11 @@ Index: debian-kernel-packaging/fs/fcntl.c
  
  static void f_modown(struct file *filp, struct pid *pid, enum pid_type type,
                       int force)
-Index: debian-kernel-packaging/fs/file_table.c
-===================================================================
---- debian-kernel-packaging.orig/fs/file_table.c
-+++ debian-kernel-packaging/fs/file_table.c
-@@ -147,6 +147,7 @@ over:
+diff --git a/fs/file_table.c b/fs/file_table.c
+index 7ec0b3e..819ee07 100644
+--- a/fs/file_table.c
++++ b/fs/file_table.c
+@@ -147,6 +147,7 @@ struct file *get_empty_filp(void)
  	}
  	return ERR_PTR(-ENFILE);
  }
@@ -89,11 +89,11 @@ Index: debian-kernel-packaging/fs/file_table.c
  
  void __init files_init(void)
  {
-Index: debian-kernel-packaging/fs/inode.c
-===================================================================
---- debian-kernel-packaging.orig/fs/inode.c
-+++ debian-kernel-packaging/fs/inode.c
-@@ -1668,6 +1668,7 @@ int update_time(struct inode *inode, str
+diff --git a/fs/inode.c b/fs/inode.c
+index af894e7..169811b 100644
+--- a/fs/inode.c
++++ b/fs/inode.c
+@@ -1658,6 +1658,7 @@ int update_time(struct inode *inode, struct timespec64 *time, int flags)
  
  	return update_time(inode, time, flags);
  }
@@ -101,11 +101,11 @@ Index: debian-kernel-packaging/fs/inode.c
  
  /**
   *	touch_atime	-	update the access time
-Index: debian-kernel-packaging/fs/namespace.c
-===================================================================
---- debian-kernel-packaging.orig/fs/namespace.c
-+++ debian-kernel-packaging/fs/namespace.c
-@@ -517,6 +517,7 @@ void __mnt_drop_write(struct vfsmount *m
+diff --git a/fs/namespace.c b/fs/namespace.c
+index eb7cd21..c536458 100644
+--- a/fs/namespace.c
++++ b/fs/namespace.c
+@@ -517,6 +517,7 @@ void __mnt_drop_write(struct vfsmount *mnt)
  	mnt_dec_writers(real_mount(mnt));
  	preempt_enable();
  }
@@ -113,7 +113,7 @@ Index: debian-kernel-packaging/fs/namespace.c
  
  /**
   * mnt_drop_write - give up write access to a mount
-@@ -851,6 +852,7 @@ int is_current_mnt_ns(struct vfsmount *m
+@@ -860,6 +861,7 @@ int is_current_mnt_ns(struct vfsmount *mnt)
  {
  	return check_mnt(real_mount(mnt));
  }
@@ -121,7 +121,7 @@ Index: debian-kernel-packaging/fs/namespace.c
  
  /*
   * vfsmount lock must be held for write
-@@ -1887,6 +1889,7 @@ int iterate_mounts(int (*f)(struct vfsmo
+@@ -1917,6 +1919,7 @@ int iterate_mounts(int (*f)(struct vfsmount *, void *), void *arg,
  	}
  	return 0;
  }
@@ -129,10 +129,10 @@ Index: debian-kernel-packaging/fs/namespace.c
  
  static void cleanup_group_ids(struct mount *mnt, struct mount *end)
  {
-Index: debian-kernel-packaging/fs/notify/group.c
-===================================================================
---- debian-kernel-packaging.orig/fs/notify/group.c
-+++ debian-kernel-packaging/fs/notify/group.c
+diff --git a/fs/notify/group.c b/fs/notify/group.c
+index aa5468f2..b38d224 100644
+--- a/fs/notify/group.c
++++ b/fs/notify/group.c
 @@ -22,6 +22,7 @@
  #include <linux/srcu.h>
  #include <linux/rculist.h>
@@ -141,7 +141,7 @@ Index: debian-kernel-packaging/fs/notify/group.c
  
  #include <linux/fsnotify_backend.h>
  #include "fsnotify.h"
-@@ -109,6 +110,7 @@ void fsnotify_get_group(struct fsnotify_
+@@ -109,6 +110,7 @@ void fsnotify_get_group(struct fsnotify_group *group)
  {
  	refcount_inc(&group->refcnt);
  }
@@ -149,7 +149,7 @@ Index: debian-kernel-packaging/fs/notify/group.c
  
  /*
   * Drop a reference to a group.  Free it if it's through.
-@@ -118,6 +120,7 @@ void fsnotify_put_group(struct fsnotify_
+@@ -118,6 +120,7 @@ void fsnotify_put_group(struct fsnotify_group *group)
  	if (refcount_dec_and_test(&group->refcnt))
  		fsnotify_final_destroy_group(group);
  }
@@ -157,7 +157,7 @@ Index: debian-kernel-packaging/fs/notify/group.c
  
  /*
   * Create a new fsnotify_group and hold a reference for the group returned.
-@@ -147,6 +150,7 @@ struct fsnotify_group *fsnotify_alloc_gr
+@@ -147,6 +150,7 @@ struct fsnotify_group *fsnotify_alloc_group(const struct fsnotify_ops *ops)
  
  	return group;
  }
@@ -165,19 +165,19 @@ Index: debian-kernel-packaging/fs/notify/group.c
  
  int fsnotify_fasync(int fd, struct file *file, int on)
  {
-Index: debian-kernel-packaging/fs/notify/mark.c
-===================================================================
---- debian-kernel-packaging.orig/fs/notify/mark.c
-+++ debian-kernel-packaging/fs/notify/mark.c
-@@ -108,6 +108,7 @@ void fsnotify_get_mark(struct fsnotify_m
- 	WARN_ON_ONCE(!refcount_read(&mark->refcnt));
- 	refcount_inc(&mark->refcnt);
+diff --git a/fs/notify/mark.c b/fs/notify/mark.c
+index 61f4c5f..855c655 100644
+--- a/fs/notify/mark.c
++++ b/fs/notify/mark.c
+@@ -245,6 +245,7 @@ void fsnotify_put_mark(struct fsnotify_mark *mark)
+ 	queue_delayed_work(system_unbound_wq, &reaper_work,
+ 			   FSNOTIFY_REAPER_DELAY);
  }
 +EXPORT_SYMBOL_GPL(fsnotify_put_mark);
  
- static void __fsnotify_recalc_mask(struct fsnotify_mark_connector *conn)
- {
-@@ -392,6 +393,7 @@ void fsnotify_destroy_mark(struct fsnoti
+ /*
+  * Get mark reference when we found the mark via lockless traversal of object
+@@ -399,6 +400,7 @@ void fsnotify_destroy_mark(struct fsnotify_mark *mark,
  	mutex_unlock(&group->mark_mutex);
  	fsnotify_free_mark(mark);
  }
@@ -185,15 +185,15 @@ Index: debian-kernel-packaging/fs/notify/mark.c
  
  /*
   * Sorting function for lists of fsnotify marks.
-@@ -606,6 +608,7 @@ err:
- 	fsnotify_put_mark(mark);
+@@ -624,6 +626,7 @@ int fsnotify_add_mark(struct fsnotify_mark *mark, struct inode *inode,
+ 	mutex_unlock(&group->mark_mutex);
  	return ret;
  }
 +EXPORT_SYMBOL_GPL(fsnotify_add_mark);
  
- int fsnotify_add_mark(struct fsnotify_mark *mark, struct inode *inode,
- 		      struct vfsmount *mnt, int allow_dups)
-@@ -741,6 +744,7 @@ void fsnotify_init_mark(struct fsnotify_
+ /*
+  * Given a list of marks, find the mark associated with given group. If found
+@@ -747,6 +750,7 @@ void fsnotify_init_mark(struct fsnotify_mark *mark,
  	fsnotify_get_group(group);
  	mark->group = group;
  }
@@ -201,11 +201,11 @@ Index: debian-kernel-packaging/fs/notify/mark.c
  
  /*
   * Destroy all marks in destroy_list, waits for SRCU period to finish before
-Index: debian-kernel-packaging/fs/open.c
-===================================================================
---- debian-kernel-packaging.orig/fs/open.c
-+++ debian-kernel-packaging/fs/open.c
-@@ -64,6 +64,7 @@ int do_truncate(struct dentry *dentry, l
+diff --git a/fs/open.c b/fs/open.c
+index d0e955b..527bc1a 100644
+--- a/fs/open.c
++++ b/fs/open.c
+@@ -64,6 +64,7 @@ int do_truncate(struct dentry *dentry, loff_t length, unsigned int time_attrs,
  	inode_unlock(dentry->d_inode);
  	return ret;
  }
@@ -213,19 +213,19 @@ Index: debian-kernel-packaging/fs/open.c
  
  long vfs_truncate(const struct path *path, loff_t length)
  {
-@@ -691,6 +692,7 @@ int open_check_o_direct(struct file *f)
- 	}
- 	return 0;
+@@ -723,6 +724,7 @@ SYSCALL_DEFINE3(fchown, unsigned int, fd, uid_t, user, gid_t, group)
+ {
+ 	return ksys_fchown(fd, user, group);
  }
 +EXPORT_SYMBOL_GPL(open_check_o_direct);
  
- static int do_dentry_open(struct file *f,
- 			  struct inode *inode,
-Index: debian-kernel-packaging/fs/read_write.c
-===================================================================
---- debian-kernel-packaging.orig/fs/read_write.c
-+++ debian-kernel-packaging/fs/read_write.c
-@@ -454,6 +454,7 @@ ssize_t vfs_read(struct file *file, char
+ int open_check_o_direct(struct file *f)
+ {
+diff --git a/fs/read_write.c b/fs/read_write.c
+index ccc5bc8..36f52f4 100644
+--- a/fs/read_write.c
++++ b/fs/read_write.c
+@@ -459,6 +459,7 @@ ssize_t vfs_read(struct file *file, char __user *buf, size_t count, loff_t *pos)
  
  	return ret;
  }
@@ -233,7 +233,7 @@ Index: debian-kernel-packaging/fs/read_write.c
  
  static ssize_t new_sync_write(struct file *filp, const char __user *buf, size_t len, loff_t *ppos)
  {
-@@ -494,6 +495,7 @@ vfs_readf_t vfs_readf(struct file *file)
+@@ -499,6 +500,7 @@ vfs_readf_t vfs_readf(struct file *file)
  		return new_sync_read;
  	return ERR_PTR(-ENOSYS);
  }
@@ -241,7 +241,7 @@ Index: debian-kernel-packaging/fs/read_write.c
  
  vfs_writef_t vfs_writef(struct file *file)
  {
-@@ -505,6 +507,7 @@ vfs_writef_t vfs_writef(struct file *fil
+@@ -510,6 +512,7 @@ vfs_writef_t vfs_writef(struct file *file)
  		return new_sync_write;
  	return ERR_PTR(-ENOSYS);
  }
@@ -249,7 +249,7 @@ Index: debian-kernel-packaging/fs/read_write.c
  
  ssize_t __kernel_write(struct file *file, const void *buf, size_t count, loff_t *pos)
  {
-@@ -574,6 +577,7 @@ ssize_t vfs_write(struct file *file, con
+@@ -579,6 +582,7 @@ ssize_t vfs_write(struct file *file, const char __user *buf, size_t count, loff_
  
  	return ret;
  }
@@ -257,11 +257,11 @@ Index: debian-kernel-packaging/fs/read_write.c
  
  static inline loff_t file_pos_read(struct file *file)
  {
-Index: debian-kernel-packaging/fs/splice.c
-===================================================================
---- debian-kernel-packaging.orig/fs/splice.c
-+++ debian-kernel-packaging/fs/splice.c
-@@ -850,6 +850,7 @@ long do_splice_from(struct pipe_inode_in
+diff --git a/fs/splice.c b/fs/splice.c
+index 1dd7f96..a5e3bcb 100644
+--- a/fs/splice.c
++++ b/fs/splice.c
+@@ -851,6 +851,7 @@ long do_splice_from(struct pipe_inode_info *pipe, struct file *out,
  
  	return splice_write(pipe, out, ppos, len, flags);
  }
@@ -269,7 +269,7 @@ Index: debian-kernel-packaging/fs/splice.c
  
  /*
   * Attempt to initiate a splice from a file to a pipe.
-@@ -879,6 +880,7 @@ long do_splice_to(struct file *in, loff_
+@@ -880,6 +881,7 @@ long do_splice_to(struct file *in, loff_t *ppos,
  
  	return splice_read(in, ppos, pipe, len, flags);
  }
@@ -277,11 +277,11 @@ Index: debian-kernel-packaging/fs/splice.c
  
  /**
   * splice_direct_to_actor - splices data directly between two non-pipes
-Index: debian-kernel-packaging/fs/sync.c
-===================================================================
---- debian-kernel-packaging.orig/fs/sync.c
-+++ debian-kernel-packaging/fs/sync.c
-@@ -39,6 +39,7 @@ int __sync_filesystem(struct super_block
+diff --git a/fs/sync.c b/fs/sync.c
+index 2860782..ffd7ea4 100644
+--- a/fs/sync.c
++++ b/fs/sync.c
+@@ -39,6 +39,7 @@ int __sync_filesystem(struct super_block *sb, int wait)
  		sb->s_op->sync_fs(sb, wait);
  	return __sync_blockdev(sb->s_bdev, wait);
  }
@@ -289,11 +289,11 @@ Index: debian-kernel-packaging/fs/sync.c
  
  /*
   * Write out and wait upon all dirty data associated with this
-Index: debian-kernel-packaging/fs/xattr.c
-===================================================================
---- debian-kernel-packaging.orig/fs/xattr.c
-+++ debian-kernel-packaging/fs/xattr.c
-@@ -297,6 +297,7 @@ vfs_getxattr_alloc(struct dentry *dentry
+diff --git a/fs/xattr.c b/fs/xattr.c
+index f9cb1db..000b62b 100644
+--- a/fs/xattr.c
++++ b/fs/xattr.c
+@@ -296,6 +296,7 @@ vfs_getxattr_alloc(struct dentry *dentry, const char *name, char **xattr_value,
  	*xattr_value = value;
  	return error;
  }
@@ -301,11 +301,11 @@ Index: debian-kernel-packaging/fs/xattr.c
  
  ssize_t
  __vfs_getxattr(struct dentry *dentry, struct inode *inode, const char *name,
-Index: debian-kernel-packaging/kernel/locking/lockdep.c
-===================================================================
---- debian-kernel-packaging.orig/kernel/locking/lockdep.c
-+++ debian-kernel-packaging/kernel/locking/lockdep.c
-@@ -151,6 +151,7 @@ inline struct lock_class *lockdep_hlock_
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index 720f070..4f58215 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -151,6 +151,7 @@ inline struct lock_class *lockdep_hlock_class(struct held_lock *hlock)
  	}
  	return lock_classes + hlock->class_idx - 1;
  }
@@ -313,20 +313,20 @@ Index: debian-kernel-packaging/kernel/locking/lockdep.c
  #define hlock_class(hlock) lockdep_hlock_class(hlock)
  
  #ifdef CONFIG_LOCK_STAT
-Index: debian-kernel-packaging/kernel/task_work.c
-===================================================================
---- debian-kernel-packaging.orig/kernel/task_work.c
-+++ debian-kernel-packaging/kernel/task_work.c
+diff --git a/kernel/task_work.c b/kernel/task_work.c
+index 0fef395..83fb1ec 100644
+--- a/kernel/task_work.c
++++ b/kernel/task_work.c
 @@ -116,3 +116,4 @@ void task_work_run(void)
  		} while (work);
  	}
  }
 +EXPORT_SYMBOL_GPL(task_work_run);
-Index: debian-kernel-packaging/security/commoncap.c
-===================================================================
---- debian-kernel-packaging.orig/security/commoncap.c
-+++ debian-kernel-packaging/security/commoncap.c
-@@ -1330,12 +1330,14 @@ int cap_mmap_addr(unsigned long addr)
+diff --git a/security/commoncap.c b/security/commoncap.c
+index f4c33ab..70563f1 100644
+--- a/security/commoncap.c
++++ b/security/commoncap.c
+@@ -1336,12 +1336,14 @@ int cap_mmap_addr(unsigned long addr)
  	}
  	return ret;
  }
@@ -341,10 +341,10 @@ Index: debian-kernel-packaging/security/commoncap.c
  
  #ifdef CONFIG_SECURITY
  
-Index: debian-kernel-packaging/security/device_cgroup.c
-===================================================================
---- debian-kernel-packaging.orig/security/device_cgroup.c
-+++ debian-kernel-packaging/security/device_cgroup.c
+diff --git a/security/device_cgroup.c b/security/device_cgroup.c
+index cd97929..424fd23 100644
+--- a/security/device_cgroup.c
++++ b/security/device_cgroup.c
 @@ -8,6 +8,7 @@
  #include <linux/device_cgroup.h>
  #include <linux/cgroup.h>
@@ -353,16 +353,16 @@ Index: debian-kernel-packaging/security/device_cgroup.c
  #include <linux/list.h>
  #include <linux/uaccess.h>
  #include <linux/seq_file.h>
-@@ -824,3 +825,4 @@ int __devcgroup_check_permission(short t
+@@ -824,3 +825,4 @@ int __devcgroup_check_permission(short type, u32 major, u32 minor,
  
  	return 0;
  }
 +EXPORT_SYMBOL_GPL(__devcgroup_check_permission);
-Index: debian-kernel-packaging/security/security.c
-===================================================================
---- debian-kernel-packaging.orig/security/security.c
-+++ debian-kernel-packaging/security/security.c
-@@ -531,6 +531,7 @@ int security_path_rmdir(const struct pat
+diff --git a/security/security.c b/security/security.c
+index 68f46d8..3bc1348 100644
+--- a/security/security.c
++++ b/security/security.c
+@@ -537,6 +537,7 @@ int security_path_rmdir(const struct path *dir, struct dentry *dentry)
  		return 0;
  	return call_int_hook(path_rmdir, 0, dir, dentry);
  }
@@ -370,7 +370,7 @@ Index: debian-kernel-packaging/security/security.c
  
  int security_path_unlink(const struct path *dir, struct dentry *dentry)
  {
-@@ -547,6 +548,7 @@ int security_path_symlink(const struct p
+@@ -553,6 +554,7 @@ int security_path_symlink(const struct path *dir, struct dentry *dentry,
  		return 0;
  	return call_int_hook(path_symlink, 0, dir, dentry, old_name);
  }
@@ -378,7 +378,7 @@ Index: debian-kernel-packaging/security/security.c
  
  int security_path_link(struct dentry *old_dentry, const struct path *new_dir,
  		       struct dentry *new_dentry)
-@@ -555,6 +557,7 @@ int security_path_link(struct dentry *ol
+@@ -561,6 +563,7 @@ int security_path_link(struct dentry *old_dentry, const struct path *new_dir,
  		return 0;
  	return call_int_hook(path_link, 0, old_dentry, new_dir, new_dentry);
  }
@@ -386,7 +386,7 @@ Index: debian-kernel-packaging/security/security.c
  
  int security_path_rename(const struct path *old_dir, struct dentry *old_dentry,
  			 const struct path *new_dir, struct dentry *new_dentry,
-@@ -582,6 +585,7 @@ int security_path_truncate(const struct
+@@ -588,6 +591,7 @@ int security_path_truncate(const struct path *path)
  		return 0;
  	return call_int_hook(path_truncate, 0, path);
  }
@@ -394,7 +394,7 @@ Index: debian-kernel-packaging/security/security.c
  
  int security_path_chmod(const struct path *path, umode_t mode)
  {
-@@ -589,6 +593,7 @@ int security_path_chmod(const struct pat
+@@ -595,6 +599,7 @@ int security_path_chmod(const struct path *path, umode_t mode)
  		return 0;
  	return call_int_hook(path_chmod, 0, path, mode);
  }
@@ -402,7 +402,7 @@ Index: debian-kernel-packaging/security/security.c
  
  int security_path_chown(const struct path *path, kuid_t uid, kgid_t gid)
  {
-@@ -596,6 +601,7 @@ int security_path_chown(const struct pat
+@@ -602,6 +607,7 @@ int security_path_chown(const struct path *path, kuid_t uid, kgid_t gid)
  		return 0;
  	return call_int_hook(path_chown, 0, path, uid, gid);
  }
@@ -410,7 +410,7 @@ Index: debian-kernel-packaging/security/security.c
  
  int security_path_chroot(const struct path *path)
  {
-@@ -681,6 +687,7 @@ int security_inode_readlink(struct dentr
+@@ -687,6 +693,7 @@ int security_inode_readlink(struct dentry *dentry)
  		return 0;
  	return call_int_hook(inode_readlink, 0, dentry);
  }
@@ -418,7 +418,7 @@ Index: debian-kernel-packaging/security/security.c
  
  int security_inode_follow_link(struct dentry *dentry, struct inode *inode,
  			       bool rcu)
-@@ -696,6 +703,7 @@ int security_inode_permission(struct ino
+@@ -702,6 +709,7 @@ int security_inode_permission(struct inode *inode, int mask)
  		return 0;
  	return call_int_hook(inode_permission, 0, inode, mask);
  }
@@ -426,7 +426,7 @@ Index: debian-kernel-packaging/security/security.c
  
  int security_inode_setattr(struct dentry *dentry, struct iattr *attr)
  {
-@@ -867,6 +875,7 @@ int security_file_permission(struct file
+@@ -873,6 +881,7 @@ int security_file_permission(struct file *file, int mask)
  
  	return fsnotify_perm(file, mask);
  }
@@ -434,7 +434,7 @@ Index: debian-kernel-packaging/security/security.c
  
  int security_file_alloc(struct file *file)
  {
-@@ -926,6 +935,7 @@ int security_mmap_file(struct file *file
+@@ -932,6 +941,7 @@ int security_mmap_file(struct file *file, unsigned long prot,
  		return ret;
  	return ima_file_mmap(file, prot);
  }

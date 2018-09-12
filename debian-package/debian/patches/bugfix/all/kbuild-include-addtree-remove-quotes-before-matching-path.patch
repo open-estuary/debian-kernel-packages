@@ -27,16 +27,14 @@ Fixes: db547ef19064 ("Kbuild: don't add obj tree in additional includes")
 Cc: stable@vger.kernel.org # 4.8+
 Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
 ---
-Index: debian-kernel-packaging/scripts/Kbuild.include
-===================================================================
---- debian-kernel-packaging.orig/scripts/Kbuild.include
-+++ debian-kernel-packaging/scripts/Kbuild.include
-@@ -290,7 +290,7 @@ hdr-inst := -f $(srctree)/scripts/Makefi
+--- a/scripts/Kbuild.include
++++ b/scripts/Kbuild.include
+@@ -215,7 +215,7 @@ hdr-inst := -f $(srctree)/scripts/Makefi
  # Prefix -I with $(srctree) if it is not an absolute path.
  # skip if -I has no parameter
  addtree = $(if $(patsubst -I%,%,$(1)), \
--$(if $(filter-out -I/% -I./% -I../%,$(1)),$(patsubst -I%,-I$(srctree)/%,$(1)),$(1)))
-+$(if $(filter-out -I/% -I./% -I../%,$(subst $(quote),,$(subst $(squote),,$(1)))),$(patsubst -I%,-I$(srctree)/%,$(1)),$(1)))
+-$(if $(filter-out -I/% -I./% -I../%,$(1)),$(patsubst -I%,-I$(srctree)/%,$(1)),$(1)),$(1))
++$(if $(filter-out -I/% -I./% -I../%,$(subst $(quote),,$(subst $(squote),,$(1)))),$(patsubst -I%,-I$(srctree)/%,$(1)),$(1)),$(1))
  
  # Find all -I options and call addtree
  flags = $(foreach o,$($(1)),$(if $(filter -I%,$(o)),$(call addtree,$(o)),$(o)))

@@ -1,7 +1,7 @@
 From: Frank Rowand <frank.rowand@am.sony.com>
 Date: Mon, 19 Sep 2011 14:51:14 -0700
 Subject: arm: Convert arm boot_lock to raw
-Origin: https://www.kernel.org/pub/linux/kernel/projects/rt/4.14/older/patches-4.14.15-rt13.tar.xz
+Origin: https://www.kernel.org/pub/linux/kernel/projects/rt/4.18/older/patches-4.18.5-rt3.tar.xz
 
 The arm boot_lock is used by the secondary processor startup code.  The locking
 task is the idle thread, which has idle->sched_class == &idle_sched_class.
@@ -19,6 +19,10 @@ Fix by converting boot_lock to a raw spin lock.
 Signed-off-by: Frank Rowand <frank.rowand@am.sony.com>
 Link: http://lkml.kernel.org/r/4E77B952.3010606@am.sony.com
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Tested-by: Tony Lindgren <tony@atomide.com>
+Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
+Tested-by: Krzysztof Kozlowski <krzk@kernel.org> [Exynos5422 Linaro PM-QA]
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
  arch/arm/mach-exynos/platsmp.c    |   12 ++++++------
  arch/arm/mach-hisi/platmcpm.c     |   22 +++++++++++-----------
@@ -32,8 +36,8 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 
 --- a/arch/arm/mach-exynos/platsmp.c
 +++ b/arch/arm/mach-exynos/platsmp.c
-@@ -229,7 +229,7 @@ static void __iomem *scu_base_addr(void)
- 	return (void __iomem *)(S5P_VA_SCU);
+@@ -239,7 +239,7 @@ static void write_pen_release(int val)
+ 	sync_cache_w(&pen_release);
  }
  
 -static DEFINE_SPINLOCK(boot_lock);
@@ -41,7 +45,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  
  static void exynos_secondary_init(unsigned int cpu)
  {
-@@ -242,8 +242,8 @@ static void exynos_secondary_init(unsign
+@@ -252,8 +252,8 @@ static void exynos_secondary_init(unsign
  	/*
  	 * Synchronise with the boot thread.
  	 */
@@ -52,7 +56,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  }
  
  int exynos_set_boot_addr(u32 core_id, unsigned long boot_addr)
-@@ -307,7 +307,7 @@ static int exynos_boot_secondary(unsigne
+@@ -317,7 +317,7 @@ static int exynos_boot_secondary(unsigne
  	 * Set synchronisation state between this boot processor
  	 * and the secondary one
  	 */
@@ -61,7 +65,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  
  	/*
  	 * The secondary processor is waiting to be released from
-@@ -334,7 +334,7 @@ static int exynos_boot_secondary(unsigne
+@@ -344,7 +344,7 @@ static int exynos_boot_secondary(unsigne
  
  		if (timeout == 0) {
  			printk(KERN_ERR "cpu1 power enable failed");
@@ -70,7 +74,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  			return -ETIMEDOUT;
  		}
  	}
-@@ -380,7 +380,7 @@ static int exynos_boot_secondary(unsigne
+@@ -390,7 +390,7 @@ static int exynos_boot_secondary(unsigne
  	 * calibrations, then wait for it to finish
  	 */
  fail:
@@ -177,7 +181,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  
  void __iomem *omap4_get_scu_base(void)
  {
-@@ -136,8 +136,8 @@ static void omap4_secondary_init(unsigne
+@@ -177,8 +177,8 @@ static void omap4_secondary_init(unsigne
  	/*
  	 * Synchronise with the boot thread.
  	 */
@@ -188,7 +192,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  }
  
  static int omap4_boot_secondary(unsigned int cpu, struct task_struct *idle)
-@@ -150,7 +150,7 @@ static int omap4_boot_secondary(unsigned
+@@ -191,7 +191,7 @@ static int omap4_boot_secondary(unsigned
  	 * Set synchronisation state between this boot processor
  	 * and the secondary one
  	 */
@@ -197,7 +201,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  
  	/*
  	 * Update the AuxCoreBoot0 with boot state for secondary core.
-@@ -229,7 +229,7 @@ static int omap4_boot_secondary(unsigned
+@@ -270,7 +270,7 @@ static int omap4_boot_secondary(unsigned
  	 * Now the secondary core is starting up let it run its
  	 * calibrations, then wait for it to finish
  	 */
