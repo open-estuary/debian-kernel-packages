@@ -10,7 +10,6 @@ debian/arch-sh4-fix-uimage-build.patch
 debian/powerpcspe-omit-uimage.patch
 debian/tools-perf-version.patch
 debian/tools-perf-install.patch
-debian/wireless-add-debian-wireless-regdb-certificates.patch
 debian/export-symbols-needed-by-android-drivers.patch
 debian/android-enable-building-ashmem-and-binder-as-modules.patch
 
@@ -156,6 +155,5 @@ bugfix/all/tools-lib-api-fs-fs.c-fix-misuse-of-strncpy.patch
 bugfix/all/usbip-fix-misuse-of-strncpy.patch
 
 # wireless: Disable regulatory.db direct loading (until we sort out signing)
-debian/wireless-disable-regulatory.db-direct-loading.patch
 
 # ABI maintenance
