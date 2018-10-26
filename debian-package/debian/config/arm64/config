@@ -104,7 +104,6 @@ CONFIG_TEGRA_ACONNECT=y
 ##
 ## file: drivers/char/Kconfig
 ##
-# CONFIG_DEVMEM is not set
 
 ##
 ## file: drivers/char/hw_random/Kconfig
@@ -539,6 +538,10 @@ CONFIG_HNS3_DCB=m
 CONFIG_HNS3_HCLGEVF=m
 CONFIG_HNS3_ENET=m
 CONFIG_KALLSYMS_ALL=y
+CONFIG_ARCH_HAS_DEVMEM_IS_ALLOWED=y
+CONFIG_DEVMEM=y
+CONFIG_STRICT_DEVMEM=n
+CONFIG_IO_STRICT_DEVMEM=n
 
 ##
 ## file: drivers/net/ethernet/intel/Kconfig
