@@ -117,7 +117,7 @@ $(BUILD_DIR)/$(SOURCE_PACKAGE_NAME)-source-$(UPSTREAMVERSION).tar.xz: $(STAMPS_D
 		-name '*.pyc' -prune -o \
 		-print0 | \
 		sort -z | \
-		tar --no-recursion --null -T - -caf '$(SOURCE_PACKAGE_NAME)-source-$(UPSTREAMVERSION).tar.xz'
+		tar --use-compress-program="xz -T0" --no-recursion --null -T - -cf '$(SOURCE_PACKAGE_NAME)-source-$(UPSTREAMVERSION).tar.xz'
 	rm -rf '$(DIR)'
 
 $(BUILD_DIR)/linux-patch-$(UPSTREAMVERSION)-%.patch.xz: $(STAMPS_DIR)/source_none $(STAMPS_DIR)/source_%
