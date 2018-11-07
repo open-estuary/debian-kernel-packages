@@ -4,4 +4,4 @@ flavours:
  cloud-amd64
 
 [amd64_description]
-parts: xen
+parts:

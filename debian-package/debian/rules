@@ -16,8 +16,13 @@ ifdef DEBIAN_KERNEL_JOBS
   MAKEFLAGS += -j$(DEBIAN_KERNEL_JOBS)
 endif
 BUILD_STAGE1 := $(filter stage1,$(DEB_BUILD_PROFILES))
+ifneq (,$(filter nodoc,$(DEB_BUILD_PROFILES)))
+# This only disables building the linux-doc package.
+# The rules for tools packages check separately for the 'nodoc' profile.
+  MAKEFLAGS += DO_DOCS=False
+endif
 ifneq (,$(filter pkg.linux.notools,$(DEB_BUILD_PROFILES)))
-  MAKEFLAGS += DO_TOOLS=False
+  MAKEFLAGS += DO_TOOLS_VERSIONED=False DO_TOOLS_UNVERSIONED=False
 endif
 
 .NOTPARALLEL:
@@ -109,6 +114,6 @@ debian/control-real: debian/bin/gencontrol.py $(CONTROL_FILES)
 	@echo ignore the following error, the debian/control file has
 	@echo been generated SUCCESSFULLY.
 	@echo
-	#exit 1 - required by linaro ci
+	exit 1
 
 .PHONY: clean build setup binary-indep binary-arch binary

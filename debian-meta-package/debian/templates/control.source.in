@@ -1,4 +1,4 @@
-Source: linux-latest-estuary
+Source: linux-estuary-latest
 Section: kernel
 Priority: optional
 Maintainer: Xinliang Liu <xinliang.liu@linaro.org>

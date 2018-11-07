@@ -1,3 +1,10 @@
+# Disable features broken by exclusion of upstream files
+debian/dfsg/arch-powerpc-platforms-8xx-ucode-disable.patch
+debian/dfsg/drivers-media-dvb-dvb-usb-af9005-disable.patch
+debian/dfsg/vs6624-disable.patch
+debian/dfsg/drivers-net-appletalk-cops.patch
+debian/dfsg/video-remove-nvidiafb-and-rivafb.patch
+
 # Changes to support package build system
 debian/version.patch
 debian/uname-version-timestamp.patch
@@ -21,9 +28,8 @@ bugfix/all/firmware-remove-redundant-log-messages-from-drivers.patch
 bugfix/all/radeon-amdgpu-firmware-is-required-for-drm-and-kms-on-r600-onward.patch
 debian/firmware_class-refer-to-debian-wiki-firmware-page.patch
 
-# Patches from aufs4 repository, imported with
-# debian/patches/features/all/aufs4/gen-patch.  These are only the
-# changes needed to allow aufs to be built out-of-tree.
+# Patches from aufs4 repository, imported with debian/bin/genpatch-aufs.
+# These are only the changes needed to allow aufs to be built out-of-tree.
 features/all/aufs4/aufs4-base.patch
 features/all/aufs4/aufs4-mmap.patch
 features/all/aufs4/aufs4-standalone.patch
@@ -67,6 +73,8 @@ bugfix/x86/mmap-add-an-exception-to-the-stack-gap-for-hotspot-jvm.patch
 bugfix/powerpc/powerpc-lib-sstep-fix-building-for-powerpcspe.patch
 bugfix/powerpc/powerpc-lib-makefile-don-t-pull-in-quad.o-for-32-bit.patch
 bugfix/arm/arm-mm-export-__sync_icache_dcache-for-xen-privcmd.patch
+bugfix/arm64/arm64-acpi-Add-fixup-for-HPE-m400-quirks.patch
+bugfix/x86/x86-32-disable-3dnow-in-generic-config.patch
 
 # Arch features
 features/mips/MIPS-increase-MAX-PHYSMEM-BITS-on-Loongson-3-only.patch
@@ -88,7 +96,6 @@ bugfix/all/fs-add-module_softdep-declarations-for-hard-coded-cr.patch
 bugfix/all/partially-revert-usb-kconfig-using-select-for-usb_co.patch
 bugfix/all/kbuild-include-addtree-remove-quotes-before-matching-path.patch
 debian/revert-objtool-fix-config_stack_validation-y-warning.patch
-bugfix/all/i40e-build-for-64-bit-targets-only.patch
 bugfix/all/netfilter-ipvs-Fix-invalid-bytes-in-IP_VS_MH_TAB_IND.patch
 
 # Miscellaneous features

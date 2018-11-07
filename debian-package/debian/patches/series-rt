@@ -402,7 +402,6 @@ features/all/rt/lockdep-selftest-fix-warnings-due-to-missing-PREEMPT.patch
 # PREEMPT LAZY
 features/all/rt/preempt-lazy-support.patch
 features/all/rt/ftrace-Fix-trace-header-alignment.patch
-features/all/rt/x86-preempt-lazy.patch
 features/all/rt/arm-preempt-lazy-support.patch
 features/all/rt/powerpc-preempt-lazy-support.patch
 features/all/rt/arch-arm64-Add-lazy-preempt-support.patch
