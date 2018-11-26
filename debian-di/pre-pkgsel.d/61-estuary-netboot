@@ -2,7 +2,10 @@
 set -e
 
 cat > /target/etc/apt/sources.list.d/estuary.list <<EOF
-## Estuary 5.2 Overlay
+## Estuary App Overlay
+deb ftp://repoftp:repopushez7411@117.78.41.188/releases/5.0/debian/ estuary-5.0 main
+deb-src ftp://repoftp:repopushez7411@117.78.41.188/releases/5.0/debian/ estuary-5.0 main
+## Estuary Kernel Overlay
 deb ftp://repoftp:repopushez7411@117.78.41.188/releases/5.2/debian/ estuary-5.2 main
 deb-src ftp://repoftp:repopushez7411@117.78.41.188/releases/5.2/debian/ estuary-5.2 main
 EOF
