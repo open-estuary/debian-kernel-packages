@@ -1,0 +1,30 @@
+From ff14564bbef73f1438ffcd8b61f74d5ef360bfa2 Mon Sep 17 00:00:00 2001
+From: Matthew Garrett <mjg59@srcf.ucam.org>
+Date: Mon, 18 Feb 2019 12:44:59 +0000
+Subject: [PATCH 14/27] ACPI: Limit access to custom_method when the kernel is
+ locked down
+
+custom_method effectively allows arbitrary access to system memory, making
+it possible for an attacker to circumvent restrictions on module loading.
+Disable it if the kernel is locked down.
+
+Signed-off-by: Matthew Garrett <mjg59@srcf.ucam.org>
+Signed-off-by: David Howells <dhowells@redhat.com>
+Reviewed-by: "Lee, Chun-Yi" <jlee@suse.com>
+cc: linux-acpi@vger.kernel.org
+---
+ drivers/acpi/custom_method.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+--- a/drivers/acpi/custom_method.c
++++ b/drivers/acpi/custom_method.c
+@@ -29,6 +29,9 @@
+ 	struct acpi_table_header table;
+ 	acpi_status status;
+ 
++	if (kernel_is_locked_down("ACPI custom methods"))
++		return -EPERM;
++
+ 	if (!(*ppos)) {
+ 		/* parse the table header to get the table length */
+ 		if (count <= sizeof(struct acpi_table_header))

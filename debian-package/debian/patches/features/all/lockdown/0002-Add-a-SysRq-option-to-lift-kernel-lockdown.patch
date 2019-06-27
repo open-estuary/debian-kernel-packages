@@ -1,7 +1,7 @@
+From a774af1c7f1e0eeba3af11c11b45bee987c77a33 Mon Sep 17 00:00:00 2001
 From: Kyle McMartin <kyle@redhat.com>
-Date: Wed, 8 Nov 2017 15:11:31 +0000
-Subject: [02/29] Add a SysRq option to lift kernel lockdown
-Origin: https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/commit?id=47a04d29e952d4dd896f2ec4c2ecee6971ab364d
+Date: Mon, 18 Feb 2019 12:44:57 +0000
+Subject: [PATCH 02/27] Add a SysRq option to lift kernel lockdown
 
 Make an option to provide a sysrq key that will lift the kernel lockdown,
 thereby allowing the running kernel image to be accessed and modified.
@@ -14,17 +14,16 @@ for that arch, the Kconfig option is restricted to arches that support it.
 Signed-off-by: Kyle McMartin <kyle@redhat.com>
 Signed-off-by: David Howells <dhowells@redhat.com>
 cc: x86@kernel.org
-[bwh: Forward-ported to 4.15]
 ---
  arch/x86/include/asm/setup.h |  2 ++
  drivers/input/misc/uinput.c  |  1 +
- drivers/tty/sysrq.c          | 19 ++++++++++++------
- include/linux/input.h        |  5 +++++
- include/linux/sysrq.h        |  8 +++++++-
+ drivers/tty/sysrq.c          | 19 ++++++++++-----
+ include/linux/input.h        |  5 ++++
+ include/linux/sysrq.h        |  8 +++++-
  kernel/debug/kdb/kdb_main.c  |  2 +-
- security/Kconfig             | 10 ++++++++++
- security/lock_down.c         | 47 ++++++++++++++++++++++++++++++++++++++++++++
- 8 files changed, 86 insertions(+), 8 deletions(-)
+ security/Kconfig             |  9 +++++++
+ security/lock_down.c         | 47 ++++++++++++++++++++++++++++++++++++
+ 8 files changed, 85 insertions(+), 8 deletions(-)
 
 --- a/arch/x86/include/asm/setup.h
 +++ b/arch/x86/include/asm/setup.h
@@ -39,7 +38,7 @@ cc: x86@kernel.org
  #include <linux/pfn.h>
 --- a/drivers/input/misc/uinput.c
 +++ b/drivers/input/misc/uinput.c
-@@ -362,6 +362,7 @@ static int uinput_create_device(struct u
+@@ -366,6 +366,7 @@
  		dev->flush = uinput_dev_flush;
  	}
  
@@ -49,7 +48,7 @@ cc: x86@kernel.org
  	input_set_drvdata(udev->dev, udev);
 --- a/drivers/tty/sysrq.c
 +++ b/drivers/tty/sysrq.c
-@@ -487,6 +487,7 @@ static struct sysrq_key_op *sysrq_key_ta
+@@ -480,6 +480,7 @@
  	/* x: May be registered on mips for TLB dump */
  	/* x: May be registered on ppc/powerpc for xmon */
  	/* x: May be registered on sparc64 for global PMU dump */
@@ -57,7 +56,7 @@ cc: x86@kernel.org
  	NULL,				/* x */
  	/* y: May be registered on sparc64 for global register dump */
  	NULL,				/* y */
-@@ -530,7 +531,7 @@ static void __sysrq_put_key_op(int key,
+@@ -523,7 +524,7 @@
                  sysrq_key_table[i] = op_p;
  }
  
@@ -66,7 +65,7 @@ cc: x86@kernel.org
  {
  	struct sysrq_key_op *op_p;
  	int orig_log_level;
-@@ -550,11 +551,15 @@ void __handle_sysrq(int key, bool check_
+@@ -543,11 +544,15 @@
  
          op_p = __sysrq_get_key_op(key);
          if (op_p) {
@@ -83,7 +82,7 @@ cc: x86@kernel.org
  			pr_cont("%s\n", op_p->action_msg);
  			console_loglevel = orig_log_level;
  			op_p->handler(key);
-@@ -586,7 +591,7 @@ void __handle_sysrq(int key, bool check_
+@@ -579,7 +584,7 @@
  void handle_sysrq(int key)
  {
  	if (sysrq_on())
@@ -92,7 +91,7 @@ cc: x86@kernel.org
  }
  EXPORT_SYMBOL(handle_sysrq);
  
-@@ -667,7 +672,7 @@ static void sysrq_do_reset(struct timer_
+@@ -659,7 +664,7 @@
  static void sysrq_handle_reset_request(struct sysrq_state *state)
  {
  	if (state->reset_requested)
@@ -101,7 +100,7 @@ cc: x86@kernel.org
  
  	if (sysrq_reset_downtime_ms)
  		mod_timer(&state->keyreset_timer,
-@@ -818,8 +823,10 @@ static bool sysrq_handle_keypress(struct
+@@ -812,8 +817,10 @@
  
  	default:
  		if (sysrq->active && value && value != 2) {
@@ -113,7 +112,7 @@ cc: x86@kernel.org
  		}
  		break;
  	}
-@@ -1102,7 +1109,7 @@ static ssize_t write_sysrq_trigger(struc
+@@ -1096,7 +1103,7 @@
  
  		if (get_user(c, buf))
  			return -EFAULT;
@@ -124,7 +123,7 @@ cc: x86@kernel.org
  	return count;
 --- a/include/linux/input.h
 +++ b/include/linux/input.h
-@@ -42,6 +42,7 @@ struct input_value {
+@@ -42,6 +42,7 @@
   * @phys: physical path to the device in the system hierarchy
   * @uniq: unique identification code for the device (if device has it)
   * @id: id of the device (struct input_id)
@@ -132,7 +131,7 @@ cc: x86@kernel.org
   * @propbit: bitmap of device properties and quirks
   * @evbit: bitmap of types of events supported by the device (EV_KEY,
   *	EV_REL, etc.)
-@@ -124,6 +125,8 @@ struct input_dev {
+@@ -124,6 +125,8 @@
  	const char *uniq;
  	struct input_id id;
  
@@ -141,7 +140,7 @@ cc: x86@kernel.org
  	unsigned long propbit[BITS_TO_LONGS(INPUT_PROP_CNT)];
  
  	unsigned long evbit[BITS_TO_LONGS(EV_CNT)];
-@@ -190,6 +193,8 @@ struct input_dev {
+@@ -190,6 +193,8 @@
  };
  #define to_input_dev(d) container_of(d, struct input_dev, dev)
  
@@ -161,7 +160,7 @@ cc: x86@kernel.org
  struct sysrq_key_op {
  	void (*handler)(int);
  	char *help_msg;
-@@ -43,8 +45,12 @@ struct sysrq_key_op {
+@@ -43,8 +45,12 @@
   * are available -- else NULL's).
   */
  
@@ -177,7 +176,7 @@ cc: x86@kernel.org
  struct sysrq_key_op *__sysrq_get_key_op(int key);
 --- a/kernel/debug/kdb/kdb_main.c
 +++ b/kernel/debug/kdb/kdb_main.c
-@@ -1970,7 +1970,7 @@ static int kdb_sr(int argc, const char *
+@@ -1981,7 +1981,7 @@
  		return KDB_ARGCOUNT;
  
  	kdb_trap_printk++;
@@ -188,9 +187,9 @@ cc: x86@kernel.org
  	return 0;
 --- a/security/Kconfig
 +++ b/security/Kconfig
-@@ -222,6 +222,16 @@ config LOCK_DOWN_KERNEL
- 	  turns off various features that might otherwise allow access to the
- 	  kernel image (eg. setting MSR registers).
+@@ -254,6 +254,15 @@
+         help
+           Enable the kernel lock down functionality automatically at boot.
  
 +config ALLOW_LOCKDOWN_LIFT_BY_SYSRQ
 +	bool "Allow the kernel lockdown to be lifted by SysRq"
@@ -201,10 +200,9 @@ cc: x86@kernel.org
 +	  Allow the lockdown on a kernel to be lifted, by pressing a SysRq key
 +	  combination on a wired keyboard.
 +
-+
- source security/selinux/Kconfig
- source security/smack/Kconfig
- source security/tomoyo/Kconfig
+ source "security/selinux/Kconfig"
+ source "security/smack/Kconfig"
+ source "security/tomoyo/Kconfig"
 --- a/security/lock_down.c
 +++ b/security/lock_down.c
 @@ -11,8 +11,14 @@
@@ -222,7 +220,7 @@ cc: x86@kernel.org
  
  /*
   * Put the kernel into lock-down mode.
-@@ -58,3 +64,44 @@ bool __kernel_is_locked_down(const char
+@@ -57,3 +63,44 @@
  	return kernel_locked_down;
  }
  EXPORT_SYMBOL(__kernel_is_locked_down);

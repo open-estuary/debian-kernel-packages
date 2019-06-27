@@ -6,8 +6,8 @@ cat > /target/etc/apt/sources.list.d/estuary.list <<EOF
 deb ftp://repoftp:repopushez7411@117.78.41.188/releases/5.0/debian/ estuary-5.0 main
 deb-src ftp://repoftp:repopushez7411@117.78.41.188/releases/5.0/debian/ estuary-5.0 main
 ## Estuary Kernel Overlay
-deb ftp://repoftp:repopushez7411@117.78.41.188/releases/5.2/debian/ estuary-5.2 main
-deb-src ftp://repoftp:repopushez7411@117.78.41.188/releases/5.2/debian/ estuary-5.2 main
+deb [trusted=yes] http://114.119.4.74/kernel-5.3/debian/ stretch main
+deb-src [trusted=yes] http://114.119.4.74/kernel-5.3/debian/ stretch main
 EOF
 
 cp /usr/share/estuary/estuaryrepo.key /target/tmp/key.pub

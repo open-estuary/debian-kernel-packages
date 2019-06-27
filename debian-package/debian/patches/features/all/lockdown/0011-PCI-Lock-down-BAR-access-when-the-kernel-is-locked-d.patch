@@ -1,7 +1,8 @@
-From: Matthew Garrett <matthew.garrett@nebula.com>
-Date: Wed, 8 Nov 2017 15:11:33 +0000
-Subject: [11/29] PCI: Lock down BAR access when the kernel is locked down
-Origin: https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/commit?id=d107d11fd7ac982a34b1233722cb3e72f9fe5a20
+From 86cb8237694b3595cb2a4e7a807ae4f737c95051 Mon Sep 17 00:00:00 2001
+From: Matthew Garrett <mjg59@srcf.ucam.org>
+Date: Mon, 18 Feb 2019 12:44:59 +0000
+Subject: [PATCH 11/27] PCI: Lock down BAR access when the kernel is locked
+ down
 
 Any hardware that can potentially generate DMA has to be locked down in
 order to avoid it being possible for an attacker to modify kernel code,
@@ -9,7 +10,7 @@ allowing them to circumvent disabled module loading or module signing.
 Default to paranoid - in future we can potentially relax this for
 sufficiently IOMMU-isolated devices.
 
-Signed-off-by: Matthew Garrett <matthew.garrett@nebula.com>
+Signed-off-by: Matthew Garrett <mjg59@srcf.ucam.org>
 Signed-off-by: David Howells <dhowells@redhat.com>
 Acked-by: Bjorn Helgaas <bhelgaas@google.com>
 Reviewed-by: "Lee, Chun-Yi" <jlee@suse.com>
@@ -22,7 +23,7 @@ cc: linux-pci@vger.kernel.org
 
 --- a/drivers/pci/pci-sysfs.c
 +++ b/drivers/pci/pci-sysfs.c
-@@ -930,6 +930,9 @@ static ssize_t pci_write_config(struct f
+@@ -905,6 +905,9 @@
  	loff_t init_off = off;
  	u8 *data = (u8 *) buf;
  
@@ -32,7 +33,7 @@ cc: linux-pci@vger.kernel.org
  	if (off > dev->cfg_size)
  		return 0;
  	if (off + count > dev->cfg_size) {
-@@ -1224,6 +1227,9 @@ static int pci_mmap_resource(struct kobj
+@@ -1167,6 +1170,9 @@
  	enum pci_mmap_state mmap_type;
  	struct resource *res = &pdev->resource[bar];
  
@@ -42,7 +43,7 @@ cc: linux-pci@vger.kernel.org
  	if (res->flags & IORESOURCE_MEM && iomem_is_exclusive(res->start))
  		return -EINVAL;
  
-@@ -1299,6 +1305,9 @@ static ssize_t pci_write_resource_io(str
+@@ -1242,6 +1248,9 @@
  				     struct bin_attribute *attr, char *buf,
  				     loff_t off, size_t count)
  {
@@ -54,7 +55,7 @@ cc: linux-pci@vger.kernel.org
  
 --- a/drivers/pci/proc.c
 +++ b/drivers/pci/proc.c
-@@ -117,6 +117,9 @@ static ssize_t proc_bus_pci_write(struct
+@@ -117,6 +117,9 @@
  	int size = dev->cfg_size;
  	int cnt;
  
@@ -64,7 +65,7 @@ cc: linux-pci@vger.kernel.org
  	if (pos >= size)
  		return 0;
  	if (nbytes >= size)
-@@ -196,6 +199,9 @@ static long proc_bus_pci_ioctl(struct fi
+@@ -196,6 +199,9 @@
  #endif /* HAVE_PCI_MMAP */
  	int ret = 0;
  
@@ -74,7 +75,7 @@ cc: linux-pci@vger.kernel.org
  	switch (cmd) {
  	case PCIIOC_CONTROLLER:
  		ret = pci_domain_nr(dev->bus);
-@@ -237,7 +243,8 @@ static int proc_bus_pci_mmap(struct file
+@@ -237,7 +243,8 @@
  	struct pci_filp_private *fpriv = file->private_data;
  	int i, ret, write_combine = 0, res_bit = IORESOURCE_MEM;
  
@@ -86,7 +87,7 @@ cc: linux-pci@vger.kernel.org
  	if (fpriv->mmap_state == pci_mmap_io) {
 --- a/drivers/pci/syscall.c
 +++ b/drivers/pci/syscall.c
-@@ -93,7 +93,8 @@ SYSCALL_DEFINE5(pciconfig_write, unsigne
+@@ -90,7 +90,8 @@
  	u32 dword;
  	int err = 0;
  

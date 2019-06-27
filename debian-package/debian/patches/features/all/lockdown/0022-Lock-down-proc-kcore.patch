@@ -1,0 +1,25 @@
+From 7be3f2a1fb94a55d3bb70d44e3f7a7bbfc45909a Mon Sep 17 00:00:00 2001
+From: David Howells <dhowells@redhat.com>
+Date: Mon, 18 Feb 2019 12:45:02 +0000
+Subject: [PATCH 22/27] Lock down /proc/kcore
+
+Disallow access to /proc/kcore when the kernel is locked down to prevent
+access to cryptographic data.
+
+Signed-off-by: David Howells <dhowells@redhat.com>
+Reviewed-by: James Morris <james.l.morris@oracle.com>
+---
+ fs/proc/kcore.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+--- a/fs/proc/kcore.c
++++ b/fs/proc/kcore.c
+@@ -518,6 +518,8 @@
+ 
+ static int open_kcore(struct inode *inode, struct file *filp)
+ {
++	if (kernel_is_locked_down("/proc/kcore"))
++		return -EPERM;
+ 	if (!capable(CAP_SYS_RAWIO))
+ 		return -EPERM;
+ 
