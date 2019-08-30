@@ -5440,7 +5440,6 @@ CONFIG_CONFIGFS_FS=m
 ##
 ## file: fs/crypto/Kconfig
 ##
-CONFIG_FS_ENCRYPTION=m
 
 ##
 ## file: fs/dlm/Kconfig
@@ -6271,7 +6270,6 @@ CONFIG_NET_PKTGEN=m
 CONFIG_NET_DROP_MONITOR=m
 CONFIG_WIRELESS=y
 CONFIG_LWTUNNEL=y
-CONFIG_NET_DEVLINK=m
 
 ##
 ## file: net/6lowpan/Kconfig

@@ -94,11 +94,10 @@ ifneq ($(DO_TOOLS_VERSIONED),False)
   endif
 endif
 ifneq ($(DO_TOOLS_UNVERSIONED),False)
-  binary-arch-arch: install-usbip install-cpupower install-liblockdep
+  binary-arch-arch: install-usbip install-cpupower
   ifneq ($(filter i386 amd64 x32,$(DEB_HOST_ARCH)),)
     binary-arch-arch: install-hyperv-daemons
   endif
-  binary-indep: install-lockdep
 endif
 
 binary-indep-featureset: install-common-headers_$(FEATURESET)

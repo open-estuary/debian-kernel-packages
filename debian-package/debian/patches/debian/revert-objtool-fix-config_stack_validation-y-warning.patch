@@ -11,16 +11,16 @@ a pre-built objtool.
  1 file changed, 11 insertions(+), 11 deletions(-)
 
 diff --git a/Makefile b/Makefile
-index a056dba5ede0..bbecdac8c463 100644
+index b5865d9d8c85..4009cf7e0488 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -956,17 +956,6 @@ mod_sign_cmd = true
- endif
- export mod_sign_cmd
+@@ -957,17 +957,6 @@ export mod_sign_cmd
+ 
+ HOST_LIBELF_LIBS = $(shell pkg-config libelf --libs 2>/dev/null || echo -lelf)
  
 -ifdef CONFIG_STACK_VALIDATION
 -  has_libelf := $(call try-run,\
--		echo "int main() {}" | $(HOSTCC) -xc -o /dev/null -lelf -,1,0)
+-		echo "int main() {}" | $(HOSTCC) -xc -o /dev/null $(HOST_LIBELF_LIBS) -,1,0)
 -  ifeq ($(has_libelf),1)
 -    objtool_target := tools/objtool FORCE
 -  else
@@ -32,13 +32,13 @@ index a056dba5ede0..bbecdac8c463 100644
  PHONY += prepare0
  
  ifeq ($(KBUILD_EXTMOD),)
-@@ -1116,6 +1105,17 @@ uapi-asm-generic:
- uapi-asm-generic:
- 	$(Q)$(MAKE) $(asm-generic)=arch/$(SRCARCH)/include/generated/uapi/asm
+@@ -1112,6 +1101,17 @@ uapi-asm-generic:
+ 	$(Q)$(MAKE) $(asm-generic)=arch/$(SRCARCH)/include/generated/uapi/asm \
+ 	generic=include/uapi/asm-generic
  
 +ifdef CONFIG_STACK_VALIDATION
 +  has_libelf := $(call try-run,\
-+		echo "int main() {}" | $(HOSTCC) -xc -o /dev/null -lelf -,1,0)
++		echo "int main() {}" | $(HOSTCC) -xc -o /dev/null $(HOST_LIBELF_LIBS) -,1,0)
 +  ifeq ($(has_libelf),1)
 +    objtool_target := tools/objtool FORCE
 +  else
@@ -50,3 +50,6 @@ index a056dba5ede0..bbecdac8c463 100644
  PHONY += prepare-objtool
  prepare-objtool: $(objtool_target)
  ifeq ($(SKIP_STACK_VALIDATION),1)
+-- 
+2.20.1
+

@@ -1,6 +1,5 @@
 SUBDIRS = \
 	hv \
-	lib/lockdep \
 	objtool \
 	perf \
 	power \
